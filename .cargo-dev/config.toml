@@ -1,3 +1,5 @@
+// Rename the folder to .cargo
+
 [env]
 RUST_LOG = "basher=debug"
 RUSTFLAGS = "-C target-cpu=native"
