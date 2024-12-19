@@ -10,7 +10,8 @@ use crate::sse::defs::{SharedReplyChannels, SharedTopicTX};
 
 use async_graphql_axum::{GraphQLRequest, GraphQLResponse};
 use axum::extract::Request;
-use axum::{body::Body, response, routing::get, Extension, Router};
+use axum::routing::post;
+use axum::{body::Body, Extension, Router};
 use axum_extra::headers::authorization::Bearer;
 use axum_extra::headers::Authorization;
 use axum_extra::TypedHeader;
@@ -18,14 +19,6 @@ use defs::ApiSchema;
 use tower::ServiceBuilder;
 use tower_cookies::{CookieManagerLayer, Cookies};
 use tower_http::trace::TraceLayer;
-
-pub async fn graphiql() -> impl response::IntoResponse {
-    response::Html(
-        async_graphql::http::GraphiQLSource::build()
-            .endpoint("/graphql")
-            .finish(),
-    )
-}
 
 pub async fn handler(
     cookies: Cookies,
@@ -52,7 +45,7 @@ pub fn router(
         .data(reply_channels.clone())
         .finish();
 
-    Router::new().route("/", get(graphiql).post(handler)).layer(
+    Router::new().route("/", post(handler)).layer(
         ServiceBuilder::new()
             .layer(CookieManagerLayer::new())
             .layer(Extension(schema))
