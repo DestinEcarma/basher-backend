@@ -33,7 +33,7 @@ async fn app() -> Result<Router> {
     let reply_channels: SharedReplyChannels =
         Arc::new(Mutex::new(HashMap::<String, ReplyTX>::new()));
 
-    let serve_dir = ServeDir::new("assets").not_found_service(ServeFile::new("assets/index.html"));
+    let serve_dir = ServeDir::new("dist").not_found_service(ServeFile::new("dist/index.html"));
 
     Ok(Router::new()
         .nest("/sse", sse::router(&topic_tx, &reply_channels))
