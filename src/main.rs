@@ -13,6 +13,7 @@ use axum::body::Body;
 use axum::http::{Request, Response};
 use axum::Router;
 use futures::lock::Mutex;
+use shuttle_runtime::SecretStore;
 use sse::defs::{ReplyTX, SharedReplyChannels, TopicData};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -61,7 +62,11 @@ async fn app() -> Result<Router> {
 }
 
 #[shuttle_runtime::main]
-async fn main() -> shuttle_axum::ShuttleAxum {
+async fn main(#[shuttle_runtime::Secrets] secrets: SecretStore) -> shuttle_axum::ShuttleAxum {
+    secrets.into_iter().for_each(|(key, value)| {
+        std::env::set_var(key, value);
+    });
+
     std::panic::set_hook(Box::new(|panic_info| {
         tracing::error!("{panic_info}");
     }));

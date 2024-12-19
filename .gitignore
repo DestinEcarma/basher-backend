@@ -2,4 +2,4 @@
 .cargo
 assets/
 .shuttle*
-Secrets*.toml
+Secrets.toml
