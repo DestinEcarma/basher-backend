@@ -1,3 +1,6 @@
 [deploy]
 deny_dirty = true
+include = ["dist/*"]
+
+[build]
 assets = ["dist/*"]
