@@ -1,2 +1,3 @@
 [deploy]
+deny_dirty = true
 assets = ["dist/*"]
