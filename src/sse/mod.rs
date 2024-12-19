@@ -4,8 +4,7 @@ mod reply;
 mod topic;
 
 use axum::{extract::Path, routing::get, Extension, Router};
-use defs::{SharedReplyChannels, SharedTopicTX, TopicTX};
-use std::sync::{Arc, Mutex};
+use defs::{SharedReplyChannels, SharedTopicTX};
 use tower::ServiceBuilder;
 
 pub fn router(topic_tx: &defs::SharedTopicTX, reply_channels: &SharedReplyChannels) -> Router {

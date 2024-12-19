@@ -1,5 +1,5 @@
 use crate::miscs::get_env;
-use crate::{Error, Result};
+use crate::Result;
 
 #[allow(non_snake_case)]
 pub struct Config {

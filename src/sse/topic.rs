@@ -8,7 +8,6 @@ use axum::{
     Extension,
 };
 use futures::stream::Stream;
-use serde::Serialize;
 use tokio_stream::{
     wrappers::{errors::BroadcastStreamRecvError, BroadcastStream},
     StreamExt as _,

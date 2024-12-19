@@ -3,8 +3,6 @@ use crate::db::defs::{DBQuery, DBTable, SharedDB};
 use crate::db::table::Reply;
 use crate::Result;
 
-use super::topic;
-
 use async_graphql::{Context, InputObject, Object, ID};
 use surrealdb::sql::Thing;
 use tracing::Instrument;

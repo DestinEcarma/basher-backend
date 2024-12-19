@@ -1,14 +1,13 @@
 use crate::auth::Auth;
 use crate::db::defs::{DBQuery, DBTable, SharedDB};
-use crate::db::table::{Record, Reply};
+use crate::db::table::Record;
 use crate::graphql::defs::validate_topic;
 use crate::sse::defs::{ReplyData, SharedReplyChannels};
 use crate::{ClientError, Error, Result};
 
 use async_graphql::{Context, InputObject, Object, ID};
-use std::ops::Deref;
 use surrealdb::sql::Thing;
-use tracing::{span, Instrument};
+use tracing::Instrument;
 
 #[derive(InputObject, Clone)]
 struct CreateReplyInput {
@@ -75,7 +74,7 @@ impl ReplyMutation {
                 let channels = channels.lock().await;
 
                 if let Some(tx) = channels.get(input.topic.as_str()) {
-                    tx.send(ReplyData::new(id.clone(), "Created", "Reply"));
+                    let _ = tx.send(ReplyData::new(id.clone(), "Created", "Reply"));
                 }
 
                 Ok("Reply created successfully")
@@ -128,7 +127,7 @@ impl ReplyMutation {
                 let channels = channels.lock().await;
 
                 if let Some(tx) = channels.get(input.topic.as_str()) {
-                    tx.send(ReplyData::new(id.clone(), "Updated", "Reply"));
+                    let _ = tx.send(ReplyData::new(id.clone(), "Updated", "Reply"));
                 }
 
                 Ok("Reply updated successfully")
@@ -146,7 +145,6 @@ impl ReplyMutation {
 
     async fn like(&self, ctx: &Context<'_>, id: ID) -> Result<&str> {
         let db = ctx.data::<SharedDB>()?;
-        let channels = ctx.data::<SharedReplyChannels>()?;
 
         let future = async {
             let user = Auth::authenticate(ctx).in_current_span().await?;
@@ -196,7 +194,6 @@ impl ReplyMutation {
 
     async fn share(&self, ctx: &Context<'_>, id: ID) -> Result<&str> {
         let db = ctx.data::<SharedDB>()?;
-        let channels = ctx.data::<SharedReplyChannels>()?;
 
         let future = async {
             let user = Auth::authenticate(ctx).in_current_span().await?;

@@ -1,7 +1,6 @@
 use std::{collections::HashMap, sync::Arc};
 
 use async_graphql::ID;
-use axum::Router;
 use futures::lock::Mutex;
 use serde::Serialize;
 use tokio::sync::broadcast::Sender;

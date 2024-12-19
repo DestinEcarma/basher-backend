@@ -28,12 +28,6 @@ impl From<&str> for Tag {
     }
 }
 
-impl Tag {
-    pub fn name(&self) -> &str {
-        &self.name
-    }
-}
-
 #[derive(Deserialize, Serialize, Clone)]
 pub struct Time {
     created_at: Datetime,

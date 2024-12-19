@@ -37,7 +37,5 @@ pub async fn handler(
         event.map(|reply_data| Event::default().data(serde_json::to_string(&reply_data).unwrap()))
     });
 
-    let thing = surrealdb::sql::Thing::from(("test", "nigger"));
-
     Sse::new(stream).keep_alive(KeepAlive::new().interval(Duration::from_secs(1)))
 }

@@ -3,7 +3,6 @@ use super::defs::{Counter, UserStatus};
 use async_graphql::{Object, ID};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
-use surrealdb::sql::Thing;
 
 #[derive(Deserialize)]
 pub struct Reply {
@@ -39,12 +38,6 @@ impl Reply {
 
     async fn user_status(&self) -> &UserStatus {
         &self.user_status
-    }
-}
-
-impl Reply {
-    pub fn raw_id(&self) -> &ID {
-        &self.id
     }
 }
 

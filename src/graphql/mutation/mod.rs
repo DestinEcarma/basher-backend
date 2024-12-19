@@ -2,8 +2,7 @@ mod reply;
 mod topic;
 mod user;
 
-use async_graphql::{MergedObject, Object};
-use std::default;
+use async_graphql::Object;
 
 #[derive(Default)]
 pub struct RootMutation();

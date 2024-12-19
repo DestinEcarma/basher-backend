@@ -5,10 +5,9 @@ mod query;
 pub use mutation::RootMutation;
 pub use query::RootQuery;
 
-use crate::db::defs::{SharedDB, DB};
+use crate::db::defs::SharedDB;
 use crate::sse::defs::{SharedReplyChannels, SharedTopicTX};
 
-use async_graphql::EmptySubscription;
 use async_graphql_axum::{GraphQLRequest, GraphQLResponse};
 use axum::extract::Request;
 use axum::{body::Body, response, routing::get, Extension, Router};
@@ -16,7 +15,6 @@ use axum_extra::headers::authorization::Bearer;
 use axum_extra::headers::Authorization;
 use axum_extra::TypedHeader;
 use defs::ApiSchema;
-use std::sync::{Arc, Mutex};
 use tower::ServiceBuilder;
 use tower_cookies::{CookieManagerLayer, Cookies};
 use tower_http::trace::TraceLayer;

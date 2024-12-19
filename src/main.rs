@@ -1,5 +1,3 @@
-#![allow(unused)]
-
 mod auth;
 mod config;
 mod db;
@@ -11,28 +9,18 @@ mod sse;
 pub use crate::config::config;
 pub use crate::error::{ClientError, Error, Result};
 
-use async_graphql::EmptySubscription;
 use axum::body::Body;
 use axum::http::{Request, Response};
-use axum::{
-    http::{header, HeaderValue, Method},
-    routing::get,
-    Extension, Router,
-};
-use db::table::{Reply, Topic};
+use axum::Router;
 use futures::lock::Mutex;
-use graphql::{RootMutation, RootQuery};
-use sse::defs::{ReplyData, ReplyTX, SharedReplyChannels, TopicData};
+use sse::defs::{ReplyTX, SharedReplyChannels, TopicData};
 use std::collections::HashMap;
-use std::default;
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::net::TcpListener;
 use tokio::sync::broadcast;
-use tower::ServiceBuilder;
-use tower_cookies::CookieManagerLayer;
 use tower_http::classify::ServerErrorsFailureClass;
-use tower_http::{cors::CorsLayer, trace::TraceLayer};
+use tower_http::trace::TraceLayer;
 use tracing::Span;
 use tracing_subscriber::EnvFilter;
 

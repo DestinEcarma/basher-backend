@@ -4,8 +4,7 @@ use super::defs::UserStatus;
 
 use async_graphql::{Object, ID};
 use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
-use surrealdb::sql::{Datetime, Thing};
+use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct Topic {

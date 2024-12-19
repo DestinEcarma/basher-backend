@@ -3,13 +3,11 @@ use crate::db::defs::{DBQuery, DBTable};
 use crate::db::{defs::SharedDB, table::User};
 use crate::{ClientError, Error, Result};
 
-use async_graphql::{Context, InputObject, Object, OutputType};
-use axum::http::{header, HeaderValue};
-use axum::Json;
-use cookie::{time::Duration, Cookie};
-use std::future::Future;
+use async_graphql::{Context, InputObject, Object};
+use axum::http::header;
+use cookie::time::Duration;
 use tower_cookies::Cookies;
-use tracing::{instrument, Instrument};
+use tracing::Instrument;
 
 #[derive(InputObject, Clone)]
 struct LoginInput {
@@ -36,7 +34,6 @@ pub struct UserMutation;
 impl UserMutation {
     async fn login(&self, ctx: &Context<'_>, input: LoginInput) -> Result<String> {
         let db = ctx.data::<SharedDB>()?;
-        let cookies = ctx.data::<Cookies>()?;
 
         let input_clone = input.clone();
 
@@ -59,7 +56,7 @@ impl UserMutation {
 
             let token = Auth::generate_jwt(user.id()).in_current_span().await?;
 
-            if (input.remember_me) {
+            if input.remember_me {
                 let cookie = Auth::cookie(&token);
 
                 ctx.append_http_header(header::SET_COOKIE, cookie.to_string());
@@ -79,7 +76,6 @@ impl UserMutation {
 
     async fn sign_up(&self, ctx: &Context<'_>, input: SignUpInput) -> Result<String> {
         let db = ctx.data::<SharedDB>()?;
-        let cookies = ctx.data::<Cookies>()?;
 
         let input_clone = input.clone();
 

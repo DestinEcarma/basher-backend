@@ -2,7 +2,7 @@ mod reply;
 mod topic;
 mod user;
 
-use async_graphql::{Context, MergedObject, Object};
+use async_graphql::Object;
 
 #[derive(Default)]
 pub struct RootQuery;

@@ -1,17 +1,13 @@
 use crate::db::defs::{DBQuery, DBTable};
-use crate::db::table::{Record, Topic, User};
-use crate::graphql::defs::{validate_topic, Tag};
-use crate::graphql::query;
+use crate::db::table::Record;
+use crate::graphql::defs::validate_topic;
 use crate::sse::defs::{ReplyData, SharedReplyChannels, SharedTopicTX, TopicData};
 use crate::{auth::Auth, db::defs::SharedDB};
 use crate::{ClientError, Error, Result};
 
 use async_graphql::{Context, InputObject, Object, ID};
-use serde::Serialize;
 use std::collections::HashSet;
 use surrealdb::sql::Thing;
-use tokio::sync::broadcast::Sender;
-use tower_cookies::Cookies;
 use tracing::Instrument;
 
 #[derive(InputObject)]
@@ -80,7 +76,7 @@ impl TopicMutation {
                 tracing::debug!(id = %id.as_str(), "Topic created");
                 tracing::debug!(path = "/sse/topic", "Sending to subscribers");
 
-                tx.send(TopicData::new(id.clone()));
+                let _ = tx.send(TopicData::new(id.clone()));
 
                 Ok(id)
             };
@@ -144,7 +140,7 @@ impl TopicMutation {
                 let channels = channels.lock().await;
 
                 if let Some(tx) = channels.get(input.id.as_str()) {
-                    tx.send(ReplyData::new(input.id.clone(), "Updated", "Topic"));
+                    let _ = tx.send(ReplyData::new(input.id.clone(), "Updated", "Topic"));
                 }
 
                 Ok("Topic updated successfully")
@@ -162,7 +158,6 @@ impl TopicMutation {
 
     async fn like(&self, ctx: &Context<'_>, id: ID) -> Result<&str> {
         let db = ctx.data::<SharedDB>()?;
-        let channels = ctx.data::<SharedReplyChannels>()?;
 
         let future = async {
             let user = Auth::authenticate(ctx).in_current_span().await?;
@@ -212,7 +207,6 @@ impl TopicMutation {
 
     async fn share(&self, ctx: &Context<'_>, id: ID) -> Result<&str> {
         let db = ctx.data::<SharedDB>()?;
-        let channels = ctx.data::<SharedReplyChannels>()?;
 
         let future = async {
             let user = Auth::authenticate(ctx).in_current_span().await?;

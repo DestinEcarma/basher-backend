@@ -1,12 +1,10 @@
 use crate::auth::Auth;
 use crate::db::defs::{DBQuery, DBTable, SharedDB};
-use crate::db::table::{Record, Topic};
-use crate::graphql::defs::Tag;
+use crate::db::table::Topic;
 use crate::Result;
 
 use async_graphql::{Context, InputObject, Object, ID};
 use std::collections::HashSet;
-use std::str::FromStr;
 use surrealdb::sql::Thing;
 use tracing::Instrument;
 

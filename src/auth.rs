@@ -1,7 +1,7 @@
 use crate::{
     config,
     db::{
-        defs::{DBQuery, DBTable, SharedDB, DB},
+        defs::{DBQuery, DBTable, SharedDB},
         table::User,
     },
     ClientError, Error, Result,
@@ -75,8 +75,6 @@ impl Auth {
                         return Err(Error::JsonWebToken(err));
                     }
                 }
-
-                return Err(Error::Client(ClientError::Unauthorized));
             }
         };
 
@@ -87,7 +85,7 @@ impl Auth {
     }
 
     pub fn cookie(token: &str) -> Cookie {
-        let mut cookie = Cookie::build((Self::COOKIE_NAME, token))
+        let cookie = Cookie::build((Self::COOKIE_NAME, token))
             .path("/")
             .secure(true)
             .expires(None)
