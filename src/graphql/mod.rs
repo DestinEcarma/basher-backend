@@ -33,8 +33,6 @@ pub async fn handler(
     auth_header: Option<TypedHeader<Authorization<Bearer>>>,
     req: GraphQLRequest,
 ) -> GraphQLResponse {
-    tracing::info!("Handler");
-
     let mut req = req.into_inner();
 
     req = req.data(cookies);

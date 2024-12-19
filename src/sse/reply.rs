@@ -32,8 +32,6 @@ pub async fn handler(
 
     let stream = BroadcastStream::new(rx);
     let stream = stream.map(|event| {
-        tracing::info!("event: {:?}", event);
-
         event.map(|reply_data| Event::default().data(serde_json::to_string(&reply_data).unwrap()))
     });
 
