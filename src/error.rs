@@ -24,27 +24,27 @@ pub enum ClientError {
     Unauthorized,
 }
 
-impl Into<String> for ClientError {
-    fn into(self) -> String {
-        if let Self::BadRequest(_) = &self {
-            tracing::debug!("{self:?}");
+impl From<ClientError> for String {
+    fn from(val: ClientError) -> Self {
+        if let ClientError::BadRequest(_) = &val {
+            tracing::debug!("{val:?}");
         }
 
-        match self {
-            Self::EmailTaken => "EMAIL_TAKEN".into(),
-            Self::Unauthorized => "UNAUTHORIZED".into(),
-            Self::BadRequest(_) => "BAD_REQUEST".into(),
-            Self::TopicNotFound => "TOPIC_NOT_FOUND".into(),
-            Self::ReplyNotFound => "REPLY_NOT_FOUND".into(),
-            Self::EmailNotFound => "EMAIL_NOT_FOUND".into(),
-            Self::InvalidPassword => "INVALID_PASSWORD".into(),
+        match val {
+            ClientError::EmailTaken => "EMAIL_TAKEN".into(),
+            ClientError::Unauthorized => "UNAUTHORIZED".into(),
+            ClientError::BadRequest(_) => "BAD_REQUEST".into(),
+            ClientError::TopicNotFound => "TOPIC_NOT_FOUND".into(),
+            ClientError::ReplyNotFound => "REPLY_NOT_FOUND".into(),
+            ClientError::EmailNotFound => "EMAIL_NOT_FOUND".into(),
+            ClientError::InvalidPassword => "INVALID_PASSWORD".into(),
         }
     }
 }
 
-impl Into<StatusCode> for &ClientError {
-    fn into(self) -> StatusCode {
-        match self {
+impl From<&ClientError> for StatusCode {
+    fn from(val: &ClientError) -> Self {
+        match val {
             ClientError::EmailTaken => StatusCode::CONFLICT,
             ClientError::EmailNotFound => StatusCode::NOT_FOUND,
             ClientError::TopicNotFound => StatusCode::NOT_FOUND,
@@ -81,40 +81,40 @@ pub enum Error {
     Client(ClientError),
 }
 
-impl Into<String> for Error {
-    fn into(self) -> String {
-        match self {
-            Self::Client(client_error) => client_error.into(),
+impl From<Error> for String {
+    fn from(val: Error) -> Self {
+        match val {
+            Error::Client(client_error) => client_error.into(),
             _ => "Internal Server Error".to_string(),
         }
     }
 }
 
-impl Into<StatusCode> for &Error {
-    fn into(self) -> StatusCode {
-        match self {
+impl From<&Error> for StatusCode {
+    fn from(val: &Error) -> Self {
+        match val {
             Error::Client(client_error) => client_error.into(),
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }
 
-impl Into<async_graphql::Error> for Error {
-    fn into(self) -> async_graphql::Error {
-        let code: StatusCode = (&self).into();
+impl From<Error> for async_graphql::Error {
+    fn from(val: Error) -> Self {
+        let code: StatusCode = (&val).into();
 
-        match &self {
-            Self::Client(client_error) => tracing::debug!("ClientError::{client_error:?}"),
-            Self::Io(e) => tracing::error!("Error::Io: {e}"),
-            Self::Bcrypt(e) => tracing::error!("Error::Bcrypt: {e}"),
-            Self::SurrealDB(e) => tracing::error!("Error::SurrealDB: {e}"),
-            Self::MissingEnv(e) => tracing::error!("Error::MisingEnv: {e}"),
-            Self::JsonWebToken(e) => tracing::error!("Error::JsonWebToken: {e}"),
-            Self::AsyncGraphql(e) => tracing::error!("Error::AsyncGraphql: {e:#?}"),
-            Self::RecordNotCreated(e) => tracing::error!("Error::RecordNotCreated: {e}"),
-            Self::InvalidHeaderValue(e) => tracing::error!("Error::InvalidHeaderValue: {e}"),
+        match &val {
+            Error::Client(client_error) => tracing::debug!("ClientError::{client_error:?}"),
+            Error::Io(e) => tracing::error!("Error::Io: {e}"),
+            Error::Bcrypt(e) => tracing::error!("Error::Bcrypt: {e}"),
+            Error::SurrealDB(e) => tracing::error!("Error::SurrealDB: {e}"),
+            Error::MissingEnv(e) => tracing::error!("Error::MisingEnv: {e}"),
+            Error::JsonWebToken(e) => tracing::error!("Error::JsonWebToken: {e}"),
+            Error::AsyncGraphql(e) => tracing::error!("Error::AsyncGraphql: {e:#?}"),
+            Error::RecordNotCreated(e) => tracing::error!("Error::RecordNotCreated: {e}"),
+            Error::InvalidHeaderValue(e) => tracing::error!("Error::InvalidHeaderValue: {e}"),
         }
 
-        async_graphql::Error::new(self).extend_with(|_, e| e.set("code", code.as_u16()))
+        async_graphql::Error::new(val).extend_with(|_, e| e.set("code", code.as_u16()))
     }
 }

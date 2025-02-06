@@ -38,7 +38,7 @@ async fn app() -> Result<Router> {
     Ok(Router::new()
         .nest("/sse", sse::router(&topic_tx, &reply_channels))
         .nest("/graphql", graphql::router(&db, &topic_tx, &reply_channels))
-        .fallback_service(Router::new().nest_service("/", serve_dir))
+        .fallback_service(serve_dir)
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(|_: &Request<Body>| {

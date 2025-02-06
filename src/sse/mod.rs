@@ -15,7 +15,7 @@ pub fn router(topic_tx: &defs::SharedTopicTX, reply_channels: &SharedReplyChanne
 
     Router::new()
         .route("/topic", get(topic_route_wrapper))
-        .route("/topic/:id", get(reply_route_wrapper))
+        .route("/topic/{id}", get(reply_route_wrapper))
         .layer(
             ServiceBuilder::new()
                 .layer(Extension(topic_tx.clone()))
