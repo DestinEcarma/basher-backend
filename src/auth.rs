@@ -90,7 +90,7 @@ impl Auth {
             .secure(true)
             .expires(None)
             .http_only(true)
-            .same_site(cookie::SameSite::Strict)
+            .same_site(cookie::SameSite::None)
             .max_age(cookie::time::Duration::days(30));
 
         cookie.build()
