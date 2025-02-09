@@ -10,7 +10,7 @@ pub use crate::config::config;
 pub use crate::error::{ClientError, Error, Result};
 
 use axum::body::Body;
-use axum::http::{Request, Response};
+use axum::http::{header, Method, Request, Response};
 use axum::Router;
 use futures::lock::Mutex;
 use shuttle_runtime::SecretStore;
@@ -20,6 +20,7 @@ use std::sync::Arc;
 use std::time::Duration;
 use tokio::sync::broadcast;
 use tower_http::classify::ServerErrorsFailureClass;
+use tower_http::cors::CorsLayer;
 use tower_http::services::{ServeDir, ServeFile};
 use tower_http::trace::TraceLayer;
 use tracing::Span;
@@ -57,6 +58,12 @@ async fn app() -> Result<Router> {
                         tracing::error!("{error}");
                     },
                 ),
+        ).layer(
+            CorsLayer::new()
+                .allow_origin(axum::http::HeaderValue::from_static("https://basher.dcism.org"))
+                .allow_headers([header::AUTHORIZATION, header::CONTENT_TYPE, header::ACCEPT])
+                .allow_methods([Method::GET, Method::POST])
+                .allow_credentials(true)
         )
     )
 }
